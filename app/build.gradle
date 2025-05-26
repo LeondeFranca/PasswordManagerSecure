@@ -30,13 +30,23 @@ dependencies {
 
      implementation 'org.mindrot:jbcrypt:0.4'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+
+
+     implementation 'com.sun.mail:jakarta.mail:2.0.1'
 }
 
 application {
-    mainClass = 'com.leon.passwordmanager.Main'
      mainClass = 'passwordmanagersecure.Main'
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+run {
+    standardInput = System.in
 }
