@@ -12,7 +12,7 @@ import java.util.Base64;
 public class CryptoUtil {
     // AES
     private static final String AES = "AES";
-    private static final String SECRET = "1234567890123456"; // chave de 16 bytes (exemplo, ideal armazenar fora do código)
+    private static final String SECRET = "1234567890123456"; 
 
     public static String encryptAES(String data) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), AES);

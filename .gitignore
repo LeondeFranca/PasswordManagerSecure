@@ -13,7 +13,7 @@
 # OS files
 .DS_Store
 Thumbs.db
-
+ehthumbs.db
 # Java
 *.class
 *.jar
