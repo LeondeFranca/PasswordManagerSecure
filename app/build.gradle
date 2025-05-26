@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.leon.passwordmanager'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Bcrypt para hash de senhas
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Apache Commons Lang para geração de senhas aleatórias
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // Firebase Admin SDK
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    // GSON para trabalhar com JSON
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // (Opcional) Google Authenticator para 2FA
+    implementation 'com.warrenstrange:googleauth:1.1.4'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+     implementation 'org.mindrot:jbcrypt:0.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+}
+
+application {
+    mainClass = 'com.leon.passwordmanager.Main'
+     mainClass = 'passwordmanagersecure.Main'
+}
+
+test {
+    useJUnitPlatform()
+}
