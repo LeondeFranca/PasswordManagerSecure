@@ -1,12 +1,14 @@
 package passwordmanagersecure.utils;
 
 import java.util.Properties;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
 public class EmailSender {
-    private static final String EMAIL = "email"; 
-    private static final String PASSWORD = "senha"; 
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String EMAIL = dotenv.get("EMAIL_SENDER");
+    private static final String PASSWORD = dotenv.get("EMAIL_PASSWORD");
 
     public static void sendEmail(String toEmail, String subject, String messageText) {
         Properties props = new Properties();

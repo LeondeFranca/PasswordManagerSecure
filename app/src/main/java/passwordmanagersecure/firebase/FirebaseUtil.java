@@ -14,6 +14,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 public class FirebaseUtil {
     private static boolean initialized = false;
     private static FirebaseDatabase realtimeDatabase;
+    private static final Dotenv dotenv = Dotenv.load();
 
     public static void initialize() {
         if (initialized) return;
@@ -37,7 +40,7 @@ public class FirebaseUtil {
 
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("url firebase") 
+                .setDatabaseUrl(dotenv.get("FIREBASE_DATABASE_URL"))
                 .build();
 
             FirebaseApp app = FirebaseApp.initializeApp(options);
@@ -60,7 +63,6 @@ public class FirebaseUtil {
         return FirebaseAuth.getInstance();
     }
 
-    
     public static FirebaseDatabase getDatabase() {
         if (!initialized) {
             throw new IllegalStateException("Firebase não inicializado! Chame FirebaseUtil.initialize() antes.");
@@ -68,7 +70,6 @@ public class FirebaseUtil {
         return realtimeDatabase;
     }
 
-    
     public static String getUidByEmail(String email) throws InterruptedException, ExecutionException {
         DatabaseReference usersRef = getDatabase().getReference("users");
 
@@ -97,7 +98,6 @@ public class FirebaseUtil {
         return future.get();
     }
 
-    
     public static DataSnapshot getSnapshot(DatabaseReference ref) throws InterruptedException, ExecutionException {
         CompletableFuture<DataSnapshot> future = new CompletableFuture<>();
 
