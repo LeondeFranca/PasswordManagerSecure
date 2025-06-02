@@ -1,14 +1,28 @@
 package passwordmanagersecure.utils;
 
 import java.util.Properties;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
+import passwordmanagersecure.security.KeyManager;
+
 
 public class EmailSender {
-    private static final Dotenv dotenv = Dotenv.load();
-    private static final String EMAIL = dotenv.get("EMAIL_SENDER");
-    private static final String PASSWORD = dotenv.get("EMAIL_PASSWORD");
+
+    private static final String ENCRYPTED_EMAIL = "FtqZmtDRyCweNUZH4B2RLgYwPoyFwwHWQZkf+kztom0=";
+    private static final String ENCRYPTED_PASSWORD = "1oCl8i4Q/WXJtkjtCVHRE/bPymX2X1lV0CSrrv0548g=";
+
+    private static String EMAIL;
+    private static String PASSWORD;
+
+    static {
+        try {
+            EMAIL = KeyManager.decrypt(ENCRYPTED_EMAIL);
+            PASSWORD = KeyManager.decrypt(ENCRYPTED_PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Falha ao descriptografar as credenciais de email");
+        }
+    }
 
     public static void sendEmail(String toEmail, String subject, String messageText) {
         Properties props = new Properties();

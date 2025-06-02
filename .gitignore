@@ -33,3 +33,4 @@ build/
 # Other
 *.tmp
 .env
+/passwordmanagersecure/security/MainKeyEncryptor.java

@@ -14,17 +14,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import passwordmanagersecure.security.KeyManager; // importar o KeyManager
+
 public class FirebaseUtil {
     private static boolean initialized = false;
     private static FirebaseDatabase realtimeDatabase;
-    private static final Dotenv dotenv = Dotenv.load();
+
+    // URL do Firebase criptografada — troque esse valor pelo seu da saída do MainKeyEncryptor
+    private static final String ENCRYPTED_FIREBASE_URL = "DQ1fOXYny2v+RWvJc0SCUjIupkCF67w8qUUoOjU6lzT0NhEZHZXC1LhG2aNqCydA4YLtUQTftxvyzXj+bEHWJg==";
 
     public static void initialize() {
         if (initialized) return;
@@ -38,9 +40,17 @@ public class FirebaseUtil {
                 return;
             }
 
+            String decryptedUrl;
+            try {
+                decryptedUrl = KeyManager.decrypt(ENCRYPTED_FIREBASE_URL);
+            } catch (Exception e) {
+                System.err.println("Erro ao descriptografar URL do Firebase: " + e.getMessage());
+                return;
+            }
+
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(dotenv.get("FIREBASE_DATABASE_URL"))
+                .setDatabaseUrl(decryptedUrl)  // usa o URL descriptografado
                 .build();
 
             FirebaseApp app = FirebaseApp.initializeApp(options);
