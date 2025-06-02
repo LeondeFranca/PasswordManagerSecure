@@ -165,4 +165,41 @@ public class FirebaseUtil {
 
         return future.get();
     }
+
+    public static boolean deleteCredentialByUsername(String userId, String username) throws InterruptedException, ExecutionException {
+        if (!initialized) {
+            throw new IllegalStateException("Firebase não inicializado! Chame FirebaseUtil.initialize() antes.");
+        }
+
+        DatabaseReference credentialsRef = getDatabase()
+            .getReference("users")
+            .child(userId)
+            .child("credentials");
+
+        CompletableFuture<DataSnapshot> future = new CompletableFuture<>();
+
+        credentialsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                future.complete(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(error.toException());
+            }
+        });
+
+        DataSnapshot snapshot = future.get();
+
+        for (DataSnapshot child : snapshot.getChildren()) {
+            Credential cred = child.getValue(Credential.class);
+            if (cred != null && username.equals(cred.getUsername())) {
+                child.getRef().removeValueAsync();
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
