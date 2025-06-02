@@ -1,76 +1,66 @@
 package passwordmanagersecure.firebase;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.cloud.firestore.Firestore;
-
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
+import com.google.auth.oauth2.GoogleCredentials;
+
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import passwordmanagersecure.security.KeyManager; // importar o KeyManager
+import passwordmanagersecure.models.Credential;
+import passwordmanagersecure.security.KeyManager;
 
 public class FirebaseUtil {
+
     private static boolean initialized = false;
     private static FirebaseDatabase realtimeDatabase;
-
-    // URL do Firebase criptografada — troque esse valor pelo seu da saída do MainKeyEncryptor
-    private static final String ENCRYPTED_FIREBASE_URL = "DQ1fOXYny2v+RWvJc0SCUjIupkCF67w8qUUoOjU6lzT0NhEZHZXC1LhG2aNqCydA4YLtUQTftxvyzXj+bEHWJg==";
 
     public static void initialize() {
         if (initialized) return;
 
         try {
-            InputStream serviceAccount = FirebaseUtil.class.getClassLoader()
-                .getResourceAsStream("serviceAccountKey.json");
+            // Obtém o JSON descriptografado diretamente do KeyManager
+            String serviceAccountJson = KeyManager.getServiceAccountJson();
 
-            if (serviceAccount == null) {
-                System.err.println("❌ serviceAccountKey.json não encontrado!");
-                return;
-            }
+            // Cria InputStream a partir do JSON em memória
+            InputStream serviceAccountStream = new ByteArrayInputStream(serviceAccountJson.getBytes(StandardCharsets.UTF_8));
 
-            String decryptedUrl;
-            try {
-                decryptedUrl = KeyManager.decrypt(ENCRYPTED_FIREBASE_URL);
-            } catch (Exception e) {
-                System.err.println("Erro ao descriptografar URL do Firebase: " + e.getMessage());
-                return;
-            }
+            // Descriptografa a URL do Firebase
+            String decryptedUrl = KeyManager.getFirebaseUrl();
 
             FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(decryptedUrl)  // usa o URL descriptografado
+                .setCredentials(GoogleCredentials.fromStream(serviceAccountStream))
+                .setDatabaseUrl(decryptedUrl)
                 .build();
 
             FirebaseApp app = FirebaseApp.initializeApp(options);
             realtimeDatabase = FirebaseDatabase.getInstance(app);
 
             initialized = true;
-
             System.out.println("✅ Firebase conectado com sucesso.");
 
         } catch (IOException e) {
             System.err.println("Erro ao conectar com o Firebase: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Erro ao descriptografar dados do Firebase: " + e.getMessage());
         }
-    }
-
-    public static Firestore getFirestore() {
-        return FirestoreClient.getFirestore();
-    }
-
-    public static FirebaseAuth getAuth() {
-        return FirebaseAuth.getInstance();
     }
 
     public static FirebaseDatabase getDatabase() {
@@ -78,6 +68,56 @@ public class FirebaseUtil {
             throw new IllegalStateException("Firebase não inicializado! Chame FirebaseUtil.initialize() antes.");
         }
         return realtimeDatabase;
+    }
+
+    public static void saveCredential(String userId, Credential credential) {
+        if (!initialized) {
+            throw new IllegalStateException("Firebase não inicializado! Chame FirebaseUtil.initialize() antes.");
+        }
+
+        DatabaseReference credentialsRef = getDatabase()
+            .getReference("users")
+            .child(userId)
+            .child("credentials")
+            .push();
+
+        credentialsRef.setValueAsync(credential);
+    }
+
+    public static List<Credential> getCredentials(String userId) throws InterruptedException, ExecutionException {
+        if (!initialized) {
+            throw new IllegalStateException("Firebase não inicializado! Chame FirebaseUtil.initialize() antes.");
+        }
+
+        DatabaseReference credentialsRef = getDatabase()
+            .getReference("users")
+            .child(userId)
+            .child("credentials");
+
+        CompletableFuture<DataSnapshot> future = new CompletableFuture<>();
+
+        credentialsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                future.complete(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(error.toException());
+            }
+        });
+
+        DataSnapshot snapshot = future.get();
+
+        Map<String, Credential> credentialsMap = new HashMap<>();
+
+        for (DataSnapshot child : snapshot.getChildren()) {
+            Credential cred = child.getValue(Credential.class);
+            credentialsMap.put(child.getKey(), cred);
+        }
+
+        return new ArrayList<>(credentialsMap.values());
     }
 
     public static String getUidByEmail(String email) throws InterruptedException, ExecutionException {
