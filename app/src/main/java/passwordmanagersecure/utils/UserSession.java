@@ -1,6 +1,6 @@
 package passwordmanagersecure.utils;
 
-public class Session {
+public class UserSession {
     private static String currentUserId;
 
     public static void setCurrentUserId(String userId) {

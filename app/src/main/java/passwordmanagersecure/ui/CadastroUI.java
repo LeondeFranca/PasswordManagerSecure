@@ -2,7 +2,7 @@ package passwordmanagersecure.ui;
 
 import passwordmanagersecure.firebase.FirebaseUtil;
 import passwordmanagersecure.models.Credential;
-import passwordmanagersecure.utils.Session;
+import passwordmanagersecure.utils.UserSession;
 
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public class CadastroUI extends JFrame {
 
             if (!service.isEmpty() && !username.isEmpty() && !password.isEmpty()) {
                 Credential credential = new Credential(service, username, password);
-                FirebaseUtil.saveCredential(Session.getCurrentUserId(), credential);
+                FirebaseUtil.saveCredential(UserSession.getCurrentUserId(), credential);
                 JOptionPane.showMessageDialog(this, "Senha cadastrada com sucesso!");
                 dispose();
                 parent.setVisible(true);

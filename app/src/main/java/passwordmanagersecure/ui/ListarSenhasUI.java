@@ -2,7 +2,7 @@ package passwordmanagersecure.ui;
 
 import passwordmanagersecure.firebase.FirebaseUtil;
 import passwordmanagersecure.models.Credential;
-import passwordmanagersecure.utils.Session;
+import passwordmanagersecure.utils.UserSession;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +24,7 @@ public class ListarSenhasUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tabela);
 
         try {
-            List<Credential> lista = FirebaseUtil.getCredentials(Session.getCurrentUserId());
+            List<Credential> lista = FirebaseUtil.getCredentials(UserSession.getCurrentUserId());
             for (Credential cred : lista) {
                 tableModel.addRow(new Object[]{
                     cred.getService(),

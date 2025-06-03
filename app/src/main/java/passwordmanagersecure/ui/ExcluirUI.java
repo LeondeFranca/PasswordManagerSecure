@@ -1,7 +1,7 @@
 package passwordmanagersecure.ui;
 
 import passwordmanagersecure.firebase.FirebaseUtil;
-import passwordmanagersecure.utils.Session;
+import passwordmanagersecure.utils.UserSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class ExcluirUI extends JFrame {
             }
 
             try {
-                boolean excluido = FirebaseUtil.deleteCredentialByUsername(Session.getCurrentUserId(), username);
+                boolean excluido = FirebaseUtil.deleteCredentialByUsername(UserSession.getCurrentUserId(), username);
                 if (excluido) {
                     JOptionPane.showMessageDialog(this, "Credencial excluída com sucesso!");
                     dispose();

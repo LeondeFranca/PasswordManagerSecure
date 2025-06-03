@@ -1,6 +1,6 @@
 package passwordmanagersecure.ui;
 
-import passwordmanagersecure.utils.Session;
+import passwordmanagersecure.utils.UserSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +50,7 @@ public class MainUI extends JFrame {
         });
 
         sairButton.addActionListener(e -> {
-            Session.logout();
+            UserSession.logout();
             new LoginUI();
             this.dispose();
         });

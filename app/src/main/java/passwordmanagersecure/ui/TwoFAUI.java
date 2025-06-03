@@ -2,7 +2,7 @@ package passwordmanagersecure.ui;
 
 import passwordmanagersecure.auth.AuthManager;
 import passwordmanagersecure.firebase.FirebaseUtil;
-import passwordmanagersecure.utils.Session;
+import passwordmanagersecure.utils.UserSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,7 +75,7 @@ public class TwoFAUI extends JFrame {
             return;
         }
 
-        Session.setCurrentUserId(userId);
+        UserSession.setCurrentUserId(userId);
 
         JOptionPane.showMessageDialog(this, "Login e 2FA verificados com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
