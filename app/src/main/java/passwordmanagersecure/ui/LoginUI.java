@@ -1,8 +1,6 @@
 package passwordmanagersecure.ui;
 
 import passwordmanagersecure.auth.AuthManager;
-import passwordmanagersecure.firebase.FirebaseUtil;
-import passwordmanagersecure.utils.Session;
 
 import javax.swing.*;
 import java.awt.*;
