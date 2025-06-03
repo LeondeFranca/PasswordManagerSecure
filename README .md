@@ -1,3 +1,4 @@
+
 # 🔐 PasswordManagerSecure
 
 PasswordManagerSecure é um gerenciador de senhas seguro, desenvolvido em Java, com foco em **segurança, criptografia, autenticação 2FA e usabilidade** via interface gráfica com Swing. O projeto armazena as credenciais dos usuários de forma criptografada em um backend Firebase, garantindo proteção contra vazamentos e acessos não autorizados.
@@ -82,12 +83,12 @@ PasswordManagerSecure/
 
 - Java 17 ou superior
 - Gradle 8.x (ou usar `./gradlew`)
-- Conta no Firebase com projeto configurado
-- Uma conta de email (Gmail recomendado) com **acesso permitido para apps menos seguros** ou configuração de app password
+- Acesso à internet (para conexão com Firebase já configurado no projeto)
+- Conta de email para envio 2FA (credenciais já embutidas no código)
 
 ---
 
-### 📝 Passo a Passo
+### 📝 Passo a Passo para Rodar Localmente
 
 #### 1. Clone o repositório
 
@@ -96,33 +97,19 @@ git clone https://github.com/LeondeFranca/PasswordManagerSecure.git
 cd PasswordManagerSecure
 ```
 
-#### 2. Configuração do Firebase
-
-- Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
-- Ative o **Realtime Database**
-- Ative **Authentication > Email/Password**
-- Gere o arquivo `serviceAccountKey.json`
-- Utilize a ferramenta do projeto para criptografar esse conteúdo e embutir no código via `KeyManager`
-
-#### 3. Configuração do Email para envio 2FA
-
-- Crie uma conta de email (ex: Gmail)
-- Gere uma senha de app ou ative acesso de apps menos seguros
-- Use `KeyManager` para criptografar a string de email e senha, embutindo-as no código (já implementado)
-
-#### 4. Compile o projeto
+#### 2. Compile o projeto
 
 ```bash
 ./gradlew build
 ```
 
-#### 5. Rode o projeto
+#### 3. Execute o projeto
 
 ```bash
 ./gradlew run
 ```
 
-> A GUI será aberta e você poderá realizar o cadastro, login, verificação 2FA, e utilizar todas as funcionalidades.
+> A interface gráfica será aberta automaticamente. Você poderá fazer login, cadastro, usar 2FA, gerenciar senhas, verificar senhas vazadas e tudo mais, sem precisar configurar Firebase ou email — tudo já está configurado no projeto.
 
 ---
 
