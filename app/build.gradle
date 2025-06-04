@@ -11,35 +11,44 @@ repositories {
 }
 
 dependencies {
-    // Bcrypt para hash de senhas
     implementation 'org.mindrot:jbcrypt:0.4'
-
-    // Apache Commons Lang para geração de senhas aleatórias
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-
-    // Firebase Admin SDK
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
-    // GSON para trabalhar com JSON
-    implementation 'com.google.code.gson:gson:2.10.1'
+    // Dependências atualizadas e seguras
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.google.protobuf:protobuf-java:3.25.4'
+    implementation 'com.google.protobuf:protobuf-java-util:3.25.4'
+    implementation 'io.netty:netty-handler:4.1.110.Final'
+    implementation 'io.netty:netty-codec-http:4.1.110.Final'
+    implementation 'io.netty:netty-common:4.1.110.Final'
+    implementation 'com.google.guava:guava:32.1.2-jre'
 
-    // (Opcional) Google Authenticator para 2FA
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.warrenstrange:googleauth:1.1.4'
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
+    implementation 'io.github.cdimascio:dotenv-java:2.2.4'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
-     implementation 'org.mindrot:jbcrypt:0.4'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+}
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.google.protobuf:protobuf-java:3.25.4'
+        force 'com.google.protobuf:protobuf-java-util:3.25.4'
+        force 'io.netty:netty-handler:4.1.110.Final'
+        force 'io.netty:netty-codec-http:4.1.110.Final'
+        force 'io.netty:netty-common:4.1.110.Final'
+    }
+}
 
-     implementation 'com.sun.mail:jakarta.mail:2.0.1'
-
-     implementation 'io.github.cdimascio:dotenv-java:2.2.4'
-
+configurations {
+    runtimeClasspath
 }
 
 application {
-     mainClass = 'passwordmanagersecure.Main'
+    mainClass = 'passwordmanagersecure.Main'
 }
 
 test {
